@@ -1,5 +1,17 @@
 import sys
 
+class Graph:
+    #set_of_vertex
+    #list_of_edges
+    
+    def __init__(self, vertex):
+        self.set_of_vertex = set()
+        list_of_edges = []
+        pass
+        
+    def add_edge(existing_vertex, new_vertex, weight):
+        pass
+
 def print_help():
     print("""Для неориентированного взвешенного графа
 эта программа может найти минимальное остовное дерево.
@@ -121,9 +133,14 @@ def load_matrix_from_file():
         
     data_file.close()
     check_and_prepare_data(data)
+    return data
 
+def min_span_tree_Kruskal(data):
+    pass
+    
 if __name__ == "__main__":
     if(check_number_of_arguments() == False):
         print_help()
         exit()
-    load_matrix_from_file()
+    data = load_matrix_from_file()
+    min_span_tree_Kruskal(data)
