@@ -18,24 +18,69 @@ class Edge:
 
 class Graph:
     #set_of_vertex
-    #list_of_edges
+    #set_of_edges
     
     def __init__(self):
         self.set_of_vertex = set()
-        self.list_of_edges = []
-        pass
+        self.set_of_edges = set()
 
     def add_vertex(self, vertex):
-        pass
-        
-    def add_edge(self, edge):
-        pass
-        
-    def get_edges(self):
-        pass
+        self.set_of_vertex.add(vertex)
 
-    def get_vertexes(self):
-        pass
+    def add_edge(self, edge):
+        if edge in self.set_of_edges:
+            return False
+        else:
+            self.set_of_vertex.add(edge.vertex1)
+            self.set_of_vertex.add(edge.vertex2)
+            self.set_of_edges.add(edge)
+        return True
+
+    def union_with_graph(self, another_graph):
+        self.set_of_vertex.union(another_graph.set_of_vertex)
+        self.set_of_edges.union(another_graph.set_of_edges)
+        
+    def check_edge_for_cycle(self, edge):
+        return edge.vertex1 in self.set_of_vertex and edge.vertex2 in self.set_of_vertex
+
+    def has_this_vertex(self, vertex):
+        return vertex in self.set_of_vertex
+        
+class Forest:
+    #set_of_graphs
+    
+    def __init__(self):
+        self.set_of_graphs = set()
+        
+    def add_graph(self, graph):
+        self.set_of_graphs.add(graph)
+        
+    def check_edge_for_cycle(self, edge):
+        for graph in self.set_of_graphs:
+            if graph.check_edge_for_cycle(edge) == True:
+                return True
+        return False
+
+    def try_update_by_edge_if_not_cycle(self, edge):
+        g1 = None
+        g2 = None
+        for graph in self.set_of_graphs:
+            if graph.has_this_vertex(edge.vertex1) == True:
+                g1 = graph
+            if graph.has_this_vertex(edge.vertex2) == True:
+                g2 = graph
+                if(g1 == g2):
+                    return False
+        
+        if g1 != None and g2 != None:
+            self.set_of_graphs.discard(g2)
+            g1.union_with_graph(g2)
+            g1.add_edge(edge)
+        else:
+            return False
+        
+        return True
+        
 
 def print_help():
     print("""Для неориентированного взвешенного графа
@@ -162,16 +207,16 @@ def load_matrix_from_file():
 
 def min_span_tree_Kruskal(data):
     size = data[0][0]
-    #Создаём список графов, инициализируя вершинами
+    #Создаём лес из графов инициализированных вершинами
     #Создаём список вершин
-    list_of_graphs = []
+    f = Forest()
     list_of_vertex = []
     for i in range(1, size+1):
         v = Vertex(data[0][i], i)
         list_of_vertex.append(v)
         g = Graph()
         g.add_vertex(v)
-        list_of_graphs.append(g)
+        f.add_graph(g)
     #Создаём список рёбер с весом больше 0
     list_of_edges = []
     for i in range(1, size):
@@ -181,7 +226,13 @@ def min_span_tree_Kruskal(data):
     
     #Сортируем
     list_of_edges.sort(key = lambda x: x.weight)
+    #Проходим по списку
     for edge in list_of_edges:
+        if f.try_update_by_edge_if_not_cycle(edge) == False:
+            print("Cycle!")
+        else:
+            print("Good edge!")
+
         print(edge.weight, (edge.vertex1.name, edge.vertex1.index), (edge.vertex2.name, edge.vertex2.index))
     
 if __name__ == "__main__":
