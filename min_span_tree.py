@@ -1,15 +1,31 @@
 import sys
 
+class Vertex:
+    #vertex_name
+    #matrix_index
+    def __init__(self, name, index):
+        self.vertex_name = name;
+        self.matrix_index = index;
+
 class Graph:
     #set_of_vertex
     #list_of_edges
     
-    def __init__(self, vertex):
+    def __init__(self):
         self.set_of_vertex = set()
         list_of_edges = []
         pass
+
+    def add_vertex(self, vertex):
+        pass
         
-    def add_edge(existing_vertex, new_vertex, weight):
+    def add_edge(self, vertex_1, vertex_2, weight):
+        pass
+        
+    def get_edges(self):
+        pass
+
+    def get_vertexes(self):
         pass
 
 def print_help():
@@ -136,7 +152,10 @@ def load_matrix_from_file():
     return data
 
 def min_span_tree_Kruskal(data):
-    pass
+    # Сначала создаём список графов, заполняя его вершинами
+    list_of_graphs = []
+    for i in data:
+        print(i)
     
 if __name__ == "__main__":
     if(check_number_of_arguments() == False):
