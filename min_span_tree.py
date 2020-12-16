@@ -81,6 +81,10 @@ class Forest:
         
         return True
         
+    def how_many_components(self):
+        return len(self.set_of_graphs)
+        
+        
 def print_help():
     print("""Для неориентированного взвешенного графа
 эта программа может найти минимальное остовное дерево.
@@ -206,6 +210,7 @@ def load_matrix_from_file():
 
 def min_span_tree_Kruskal(data):
     size = data[0][0]
+    
     #Создаём лес из графов инициализированных вершинами
     #Создаём список вершин
     f = Forest()
@@ -232,15 +237,20 @@ def min_span_tree_Kruskal(data):
         if f.try_update_by_edge_if_not_cycle(edge) != False:
             mst_edges.append(edge)
 
+    #Проверка на завершённость процесса (все ли компоненты объединены)
+    if(f.how_many_components() > 1):
+        return None
+
     return mst_edges
 
 def give_answer(mst_edges):
+    print("Минимальное остовное дерево графа представлено рёбрами (возможно 0 рёбер, если граф состоит из одной вершины):\n")
     sum_weight = 0
     for edge in mst_edges:
-        print((edge.vertex1.name, edge.vertex1.index), (edge.vertex2.name, edge.vertex2.index), edge.weight)
+        print(("Ребро:", (edge.vertex1.name + str(edge.vertex1.index) + "-" + edge.vertex2.name + str(edge.vertex2.index))), ("Вес ребра:", edge.weight))
         sum_weight += edge.weight
         
-    print("Weight of min span tree:", sum_weight)
+    print("\nВес минимального остовного дерева:", sum_weight)
     
 if __name__ == "__main__":
     if(check_number_of_arguments() == False):
@@ -248,5 +258,7 @@ if __name__ == "__main__":
         exit()
     data = load_matrix_from_file()
     mst_edges = min_span_tree_Kruskal(data)
-    give_answer(mst_edges)
-    
+    if(mst_edges == None):
+        print("Данные матрицы графа не позволяют построить минимальное остовное дерево.\nВозможно в графе более одного компонента связности")
+    else:
+        give_answer(mst_edges)
