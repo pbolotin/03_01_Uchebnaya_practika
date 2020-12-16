@@ -81,7 +81,6 @@ class Forest:
         
         return True
         
-
 def print_help():
     print("""Для неориентированного взвешенного графа
 эта программа может найти минимальное остовное дерево.
@@ -226,18 +225,28 @@ def min_span_tree_Kruskal(data):
     
     #Сортируем
     list_of_edges.sort(key = lambda x: x.weight)
+    #Создаём список рёбер остова
+    mst_edges = []
     #Проходим по списку
     for edge in list_of_edges:
-        if f.try_update_by_edge_if_not_cycle(edge) == False:
-            print("Cycle!")
-        else:
-            print("Good edge!")
+        if f.try_update_by_edge_if_not_cycle(edge) != False:
+            mst_edges.append(edge)
 
-        print(edge.weight, (edge.vertex1.name, edge.vertex1.index), (edge.vertex2.name, edge.vertex2.index))
+    return mst_edges
+
+def give_answer(mst_edges):
+    sum_weight = 0
+    for edge in mst_edges:
+        print((edge.vertex1.name, edge.vertex1.index), (edge.vertex2.name, edge.vertex2.index), edge.weight)
+        sum_weight += edge.weight
+        
+    print("Weight of min span tree:", sum_weight)
     
 if __name__ == "__main__":
     if(check_number_of_arguments() == False):
         print_help()
         exit()
     data = load_matrix_from_file()
-    min_span_tree_Kruskal(data)
+    mst_edges = min_span_tree_Kruskal(data)
+    give_answer(mst_edges)
+    
